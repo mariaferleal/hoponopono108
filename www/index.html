@@ -1,0 +1,1159 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ho'oponopono 108</title>
+<style>
+@font-face { font-family: 'Young Serif'; src: url('fonts/young-serif-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Hanken Grotesk'; src: url('fonts/hanken-grotesk-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Hanken Grotesk'; src: url('fonts/hanken-grotesk-latin-500-normal.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Hanken Grotesk'; src: url('fonts/hanken-grotesk-latin-600-normal.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+html { background: var(--bg); }
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+
+/* Layout: one narrow column. Title, goal picture, ring of 108 beads with the count button at its center, phrases, controls, music. */
+:root {
+  --bg: #E8F1F9;
+  --surface: #FFFFFF;
+  --fg: #1F252F;
+  --muted: #5A6372;
+  --line: #D9D7EF;
+  --bead-off: #C9C6E6;
+  --bead-on: #57449A;
+  --guru: #1F252F;
+  --guru-ink: #57449A;
+  --on-accent: #FFFFFF;
+  --scrim: rgba(20, 24, 34, .5);
+  --on-image: #FFFFFF;
+  --glow: rgba(87, 68, 154, .55);
+  --font-display: 'Young Serif', Georgia, 'Times New Roman', serif;
+  --font-body: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1F252F;
+    --surface: #272E3A;
+    --fg: #E8F1F9;
+    --muted: #A4AEC0;
+    --line: #3A4254;
+    --bead-off: #3A4254;
+    --bead-on: #A99BEA;
+    --guru: #D9D7EF;
+    --guru-ink: #B9AEF0;
+    --on-accent: #1F252F;
+    --glow: rgba(169, 155, 234, .7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1F252F;
+  --surface: #272E3A;
+  --fg: #E8F1F9;
+  --muted: #A4AEC0;
+  --line: #3A4254;
+  --bead-off: #3A4254;
+  --bead-on: #A99BEA;
+  --guru: #D9D7EF;
+  --guru-ink: #B9AEF0;
+  --on-accent: #1F252F;
+  --glow: rgba(169, 155, 234, .7);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  padding-block: 20px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-tap-highlight-color: transparent;
+}
+.app {
+  max-width: 440px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+.titlebox {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+.titleview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.15;
+  margin: 0;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.sub, .today {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+.today { text-align: right; font-variant-numeric: tabular-nums; padding-top: 6px; }
+
+.icon-btn {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.icon-btn:hover { border-color: var(--bead-on); color: var(--fg); }
+.titleedit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block: 2px 4px;
+}
+.titleedit input {
+  flex: 1 1 180px;
+  min-width: 0;
+  min-height: 46px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--fg);
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 0 14px;
+}
+
+.goal-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 56px;
+  padding: 0 16px;
+  border: 1.5px dashed var(--bead-off);
+  border-radius: 16px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.goal-add:hover { border-color: var(--bead-on); color: var(--fg); }
+.goal-tools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.note {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+  text-align: center;
+}
+.goalbox { display: flex; flex-direction: column; gap: 8px; }
+
+.mala {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+}
+.mala svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.bead {
+  fill: var(--bead-off);
+  transition: fill .3s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.bead.on { fill: var(--bead-on); }
+.bead.pop { animation: pop .45s ease-out; }
+.guru { fill: var(--guru); }
+.tassel { stroke: var(--guru); stroke-width: 2; fill: none; stroke-linecap: round; }
+@keyframes pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(2); }
+  100% { transform: scale(1); }
+}
+
+.count {
+  position: absolute;
+  inset: 17%;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--fg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  font: inherit;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform .12s ease, border-color .3s ease;
+}
+.count:active { transform: scale(.97); }
+.count { overflow: hidden; isolation: isolate; }
+.count-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+}
+.count-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--scrim);
+}
+.mala.has-img .num { color: var(--on-image); text-shadow: 0 2px 14px rgba(0, 0, 0, .55); }
+.mala.has-img .of, .mala.has-img.done .of { color: var(--on-image); text-shadow: 0 1px 8px rgba(0, 0, 0, .6); }
+.count:focus-visible, .btn:focus-visible, .chip:focus-visible, .icon-btn:focus-visible,
+.goal-add:focus-visible, .goal-tools button:focus-visible, .play:focus-visible,
+.linkbtn:focus-visible, input:focus-visible {
+  outline: 3px solid var(--bead-on);
+  outline-offset: 4px;
+}
+.num {
+  font-family: var(--font-display);
+  font-size: clamp(64px, 23vw, 96px);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.of {
+  font-size: 13px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.mala.done .count { border-color: var(--guru); }
+.mala.done .of { color: var(--guru-ink); }
+
+.status {
+  margin: 0;
+  text-align: center;
+  font-weight: 500;
+  color: var(--muted);
+  min-height: 1.5em;
+  text-wrap: balance;
+}
+.status.done { color: var(--guru-ink); }
+
+.phrases {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 22px;
+  font-family: var(--font-display);
+  font-size: 19px;
+}
+.phrases span {
+  display: inline-block;
+  color: var(--muted);
+  transition: color .45s ease, text-shadow .45s ease, transform .45s ease;
+}
+.phrases span.lit {
+  color: var(--bead-on);
+  text-shadow: 0 0 6px var(--glow), 0 0 22px var(--glow);
+  transform: scale(1.07);
+}
+
+.actions, .confirm, .prefs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.confirm span { font-weight: 500; }
+.btn {
+  font: inherit;
+  font-weight: 500;
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.btn:hover:not(:disabled) { border-color: var(--bead-on); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn.primary {
+  background: var(--bead-on);
+  border-color: var(--bead-on);
+  color: var(--on-accent);
+}
+
+.chip {
+  font: inherit;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.chip:disabled { opacity: .5; cursor: default; }
+.chip .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--muted);
+}
+.chip[aria-checked="true"] { color: var(--fg); border-color: var(--bead-on); }
+.chip[aria-checked="true"] .dot { background: var(--bead-on); border-color: var(--bead-on); }
+
+.music {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border: 1.5px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+}
+.music-head { display: flex; align-items: center; gap: 14px; }
+.play {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--bead-on);
+  color: var(--on-accent);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.music-info { display: flex; flex-direction: column; min-width: 0; }
+.music-title { font-weight: 600; overflow-wrap: anywhere; }
+.music-sub { font-size: 14px; color: var(--muted); }
+.music-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.vol {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.vol input { flex: 1; min-width: 0; accent-color: var(--bead-on); }
+.music-links { display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 14px; }
+.linkbtn {
+  background: none;
+  border: 0;
+  padding: 0;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  font: inherit;
+  color: var(--guru-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="top">
+    <div class="titlebox">
+      <div class="titleview" id="titleView">
+        <h1 id="title">Ho'oponopono</h1>
+        <button type="button" class="icon-btn" id="editTitle" aria-label="Editar título">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M14.5 7.5l3 3"/></svg>
+        </button>
+      </div>
+      <form class="titleedit" id="titleForm" hidden>
+        <label class="sr" for="titleInput">No que você está focando</label>
+        <input type="text" id="titleInput" maxlength="40" placeholder="No que você está focando" autocomplete="off">
+        <button type="submit" class="btn primary">Salvar</button>
+        <button type="button" class="btn" id="titleCancel">Cancelar</button>
+      </form>
+      <p class="sub" id="sub">108 repetições</p>
+    </div>
+    <p class="today"><span id="rounds">0</span> <span id="roundsLabel">rodadas hoje</span></p>
+  </header>
+
+  <section class="goalbox" aria-label="Imagem do meu objetivo">
+    <button type="button" class="goal-add" id="goalAdd">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-5 4 4 3-3 4 4"/></svg>
+      Adicionar imagem do meu objetivo
+    </button>
+    <div class="goal-tools" id="goalTools" hidden>
+      <button type="button" class="chip" id="goalChange">Trocar imagem</button>
+      <button type="button" class="chip" id="goalRemove">Remover imagem</button>
+    </div>
+    <input type="file" class="sr" id="goalFile" accept="image/*" tabindex="-1" aria-label="Escolher imagem do objetivo">
+    <p class="note" id="goalNote" role="status" hidden></p>
+  </section>
+
+  <div class="mala" id="mala">
+    <svg id="ring" viewBox="0 0 360 360" aria-hidden="true"></svg>
+    <button type="button" class="count" id="count" aria-label="Contar repetição, 0 de 108">
+      <span class="count-bg" id="countBg" hidden></span>
+      <span class="num" id="num">0</span>
+      <span class="of" id="of">de 108</span>
+    </button>
+  </div>
+
+  <p class="status" id="status" aria-live="polite"></p>
+
+  <p class="phrases" id="phrases">
+    <span>Sinto muito</span>
+    <span>Me perdoe</span>
+    <span>Eu te amo</span>
+    <span>Sou grato</span>
+  </p>
+
+  <div class="actions" id="actions">
+    <button type="button" class="btn" id="undo">Desfazer</button>
+    <button type="button" class="btn" id="reset">Reiniciar</button>
+    <button type="button" class="btn primary" id="again" hidden>Nova rodada</button>
+  </div>
+  <div class="confirm" id="confirm" hidden>
+    <span>Zerar a contagem?</span>
+    <button type="button" class="btn primary" id="resetYes">Zerar</button>
+    <button type="button" class="btn" id="resetNo">Voltar</button>
+  </div>
+
+  <section class="music" aria-label="Música">
+    <div class="music-head">
+      <button type="button" class="play" id="play" aria-label="Tocar música" aria-pressed="false">
+        <svg id="playIcon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+        <svg id="pauseIcon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true" hidden><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>
+      </button>
+      <div class="music-info">
+        <span class="music-title" id="musicTitle">Som ambiente</span>
+        <span class="music-sub" id="musicSub">Toque para ouvir</span>
+      </div>
+    </div>
+    <div class="music-opts" role="radiogroup" aria-label="Fonte da música">
+      <button type="button" class="chip" id="srcAmbient" role="radio" aria-checked="true"><span class="dot"></span>Som ambiente</button>
+      <button type="button" class="chip" id="srcFile" role="radio" aria-checked="false"><span class="dot"></span>Minha música</button>
+    </div>
+    <label class="vol" for="vol">
+      <span>Volume</span>
+      <input type="range" id="vol" min="0" max="100" value="60">
+    </label>
+    <div class="music-links">
+      <button type="button" class="linkbtn" id="audioChange">Escolher música do celular</button>
+      <a class="linkbtn" href="https://youtu.be/D2KRO0qRDhU" target="_blank" rel="noopener noreferrer">Abrir a música no YouTube</a>
+    </div>
+    <input type="file" class="sr" id="audioFile" accept="audio/*" tabindex="-1" aria-label="Escolher música do celular">
+    <p class="note" id="musicNote" role="status" hidden></p>
+  </section>
+
+  <div class="prefs">
+    <button type="button" class="chip" id="haptic" role="switch" aria-checked="true"><span class="dot"></span><span id="hapticLabel">Vibração nos toques</span></button>
+    <button type="button" class="chip" id="sound" role="switch" aria-checked="false"><span class="dot"></span>Som nos toques</button>
+    <button type="button" class="chip" id="pace" aria-label="Ritmo da fala, normal. Toque para mudar.">Ritmo normal</button>
+  </div>
+  <p class="note" id="prefNote" role="status" hidden></p>
+</main>
+
+<script src="native.js"></script>
+<script>
+(function () {
+  var TOTAL = 108;
+  var KEY = 'hoponopono108';
+  var GOAL_KEY = 'hoponopono108-goal';
+  var DEFAULT_TITLE = "Ho'oponopono";
+  var NS = 'http://www.w3.org/2000/svg';
+
+  function today() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  var state = { count: 0, rounds: 0, day: today(), sound: false, haptic: true, title: '', source: 'ambient', volume: 60, pace: 'normal' };
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY));
+    if (saved && typeof saved === 'object') {
+      var c = parseInt(saved.count, 10);
+      var r = parseInt(saved.rounds, 10);
+      var v = parseInt(saved.volume, 10);
+      if (c >= 0 && c <= TOTAL) state.count = c;
+      if (r >= 0) state.rounds = r;
+      if (v >= 0 && v <= 100) state.volume = v;
+      if (typeof saved.day === 'string') state.day = saved.day;
+      if (typeof saved.sound === 'boolean') state.sound = saved.sound;
+      if (typeof saved.haptic === 'boolean') state.haptic = saved.haptic;
+      if (typeof saved.title === 'string') state.title = saved.title.slice(0, 40);
+      if (saved.source === 'file' || saved.source === 'ambient') state.source = saved.source;
+      if (saved.pace === 'calmo' || saved.pace === 'normal' || saved.pace === 'rapido') state.pace = saved.pace;
+    }
+  } catch (e) {}
+
+  function ensureDay() {
+    var t = today();
+    if (state.day !== t) { state.day = t; state.rounds = 0; }
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  ensureDay();
+
+  var $ = function (id) { return document.getElementById(id); };
+  var mala = $('mala'), ring = $('ring'), countBtn = $('count'), numEl = $('num'), ofEl = $('of');
+  var statusEl = $('status'), phrases = $('phrases'), roundsEl = $('rounds'), roundsLabel = $('roundsLabel');
+  var undoBtn = $('undo'), resetBtn = $('reset'), againBtn = $('again');
+  var actions = $('actions'), confirmRow = $('confirm');
+  var hapticBtn = $('haptic'), soundBtn = $('sound'), paceBtn = $('pace');
+  var soundMsg = '';
+
+  // Mala: guru bead at the top, then 108 beads clockwise. Every 27th bead is larger.
+  var cx = 180, cy = 180, R = 150, slots = TOTAL + 1;
+  var tassel = document.createElementNS(NS, 'path');
+  tassel.setAttribute('class', 'tassel');
+  tassel.setAttribute('d', 'M180 22 L180 8');
+  ring.appendChild(tassel);
+  var guru = document.createElementNS(NS, 'circle');
+  guru.setAttribute('class', 'guru');
+  guru.setAttribute('cx', cx); guru.setAttribute('cy', cy - R); guru.setAttribute('r', 8);
+  ring.appendChild(guru);
+  var beads = [];
+  for (var i = 1; i <= TOTAL; i++) {
+    var a = (-90 + i * 360 / slots) * Math.PI / 180;
+    var b = document.createElementNS(NS, 'circle');
+    b.setAttribute('class', 'bead');
+    b.setAttribute('cx', (cx + R * Math.cos(a)).toFixed(2));
+    b.setAttribute('cy', (cy + R * Math.sin(a)).toFixed(2));
+    b.setAttribute('r', (i % 27 === 0 && i < TOTAL) ? 4.8 : 3.2);
+    ring.appendChild(b);
+    beads.push(b);
+  }
+
+  // Audio context shared by the tap sounds and the ambient music
+  var ac = null;
+  function audio() {
+    if (!ac) {
+      try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { ac = null; }
+    }
+    if (ac && ac.state === 'suspended') { try { ac.resume(); } catch (e) {} }
+    return ac;
+  }
+  function playTone(a, dest, t, freq, dur, vol) {
+    var o1 = a.createOscillator(), o2 = a.createOscillator();
+    var g = a.createGain(), g2 = a.createGain();
+    o1.type = 'sine';
+    o1.frequency.value = freq;
+    o2.type = 'sine';
+    o2.frequency.value = freq * 2;
+    g2.gain.value = 0.35;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o1.connect(g);
+    o2.connect(g2);
+    g2.connect(g);
+    g.connect(dest);
+    o1.start(t);
+    o2.start(t);
+    o1.stop(t + dur + 0.05);
+    o2.stop(t + dur + 0.05);
+  }
+  function tone(freq, dur, vol) {
+    var a = audio();
+    if (!a) return false;
+    try { playTone(a, a.destination, a.currentTime, freq, dur, vol); return true; } catch (e) { return false; }
+  }
+
+  // Vibration. In the Android app it uses the native plugin, in a browser it uses navigator.vibrate.
+  function isNative() {
+    try { return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()); } catch (e) { return false; }
+  }
+  function useNativeHaptics() { return isNative() && !!(window.nativeHaptics && window.nativeHaptics.vibrate); }
+  var vibOk = useNativeHaptics() || typeof navigator.vibrate === 'function';
+  var vibBlocked = false;
+  function tryVibrate(p) {
+    if (useNativeHaptics()) {
+      var steps = Array.isArray(p) ? p : [p];
+      var at = 0;
+      steps.forEach(function (ms, idx) {
+        if (idx % 2 === 0) {
+          setTimeout(function () {
+            try { window.nativeHaptics.vibrate(ms).catch(function () {}); } catch (e) {}
+          }, at);
+        }
+        at += ms;
+      });
+      return true;
+    }
+    try { return navigator.vibrate(p) !== false; } catch (e) { return false; }
+  }
+  function buzz(p) {
+    if (!state.haptic || !vibOk || vibBlocked) return;
+    if (!tryVibrate(p)) { vibBlocked = true; render(); }
+  }
+
+  // Keep the screen on while counting (optional, ignored if refused)
+  var wl = null;
+  function keepAwake() {
+    try {
+      if ('wakeLock' in navigator && !wl) {
+        navigator.wakeLock.request('screen').then(function (l) {
+          wl = l;
+          l.addEventListener('release', function () { wl = null; });
+        }).catch(function () {});
+      }
+    } catch (e) {}
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState !== 'visible') stopGuide();
+    if (document.visibilityState === 'visible' && state.count > 0 && state.count < TOTAL) keepAwake();
+  });
+
+  // The four phrases light up one after another at the pace of speaking them
+  var PACES = [['calmo', 1900, 'calmo'], ['normal', 1400, 'normal'], ['rapido', 1000, 'rápido']];
+  var phraseEls = phrases.querySelectorAll('span');
+  var guideOn = false, guideIdx = 0, guideTimer = null, lastTap = 0;
+  function paceInfo() {
+    for (var i = 0; i < PACES.length; i++) if (PACES[i][0] === state.pace) return PACES[i];
+    return PACES[1];
+  }
+  function lit(n) {
+    for (var i = 0; i < phraseEls.length; i++) phraseEls[i].classList.toggle('lit', i === n);
+  }
+  function guideStep() {
+    if (!guideOn) return;
+    if (Date.now() - lastTap > 60000 || state.count <= 0 || state.count >= TOTAL) { stopGuide(); return; }
+    if (guideIdx < phraseEls.length) {
+      lit(guideIdx);
+      guideIdx++;
+      guideTimer = setTimeout(guideStep, paceInfo()[1]);
+    } else {
+      lit(-1);
+      guideIdx = 0;
+      guideTimer = setTimeout(guideStep, 600);
+    }
+  }
+  function startGuide() {
+    if (guideOn) return;
+    guideOn = true;
+    guideIdx = 0;
+    guideStep();
+  }
+  function stopGuide() {
+    guideOn = false;
+    clearTimeout(guideTimer);
+    lit(-1);
+  }
+
+  function render() {
+    var done = state.count >= TOTAL;
+    for (var i = 0; i < beads.length; i++) beads[i].classList.toggle('on', i < state.count);
+    numEl.textContent = state.count;
+    ofEl.textContent = done ? 'Concluído' : 'de ' + TOTAL;
+    countBtn.setAttribute('aria-label', done ? 'Rodada concluída, 108 de 108' : 'Contar repetição, ' + state.count + ' de ' + TOTAL);
+    mala.classList.toggle('done', done);
+    statusEl.classList.toggle('done', done);
+    if (done) statusEl.textContent = 'Rodada completa. Respire fundo.';
+    else if (state.count === 0) statusEl.textContent = 'Toque no círculo cada vez que repetir as quatro frases.';
+    else statusEl.textContent = 'Faltam ' + (TOTAL - state.count);
+    roundsEl.textContent = state.rounds;
+    roundsLabel.textContent = state.rounds === 1 ? 'rodada hoje' : 'rodadas hoje';
+    undoBtn.disabled = state.count === 0;
+    resetBtn.hidden = done;
+    againBtn.hidden = !done;
+    var vibOff = !vibOk || vibBlocked;
+    hapticBtn.setAttribute('aria-checked', String(state.haptic && !vibOff));
+    hapticBtn.disabled = vibOff;
+    $('hapticLabel').textContent = vibOff ? 'Vibração indisponível aqui' : 'Vibração nos toques';
+    soundBtn.setAttribute('aria-checked', String(state.sound));
+    var msg = [];
+    if (vibOff) msg.push(vibBlocked ? 'Este navegador não deixa a página vibrar. No app Android ela funciona.' : 'Este aparelho não vibra pela página.');
+    if (soundMsg) msg.push(soundMsg);
+    note($('prefNote'), msg.join(' '));
+  }
+
+  function tap() {
+    ensureDay();
+    if (state.count >= TOTAL) return;
+    state.count++;
+    var n = state.count;
+    var marker = n % 27 === 0;
+    if (n === TOTAL) state.rounds++;
+    save();
+    render();
+    var b = beads[n - 1];
+    b.classList.remove('pop');
+    void b.getBoundingClientRect();
+    b.classList.add('pop');
+    lastTap = Date.now();
+    if (n === TOTAL) stopGuide(); else startGuide();
+    keepAwake();
+    if (n === TOTAL) {
+      buzz(400);
+      if (state.sound) { tone(528, 3, 0.5); tone(792, 3, 0.3); tone(1056, 2.5, 0.25); }
+    } else if (marker) {
+      buzz([70, 90, 70]);
+      if (state.sound) { tone(440, 0.9, 0.5); tone(880, 0.9, 0.25); }
+    } else {
+      buzz(30);
+      if (state.sound) tone(660, 0.25, 0.4);
+    }
+  }
+
+  function undo() {
+    if (state.count === 0) return;
+    if (state.count === TOTAL) state.rounds = Math.max(0, state.rounds - 1);
+    state.count--;
+    if (state.count === 0) stopGuide();
+    save();
+    render();
+  }
+  function newRound() {
+    state.count = 0;
+    stopGuide();
+    save();
+    render();
+  }
+
+  countBtn.addEventListener('click', tap);
+  undoBtn.addEventListener('click', undo);
+  againBtn.addEventListener('click', newRound);
+  resetBtn.addEventListener('click', function () {
+    actions.hidden = true;
+    confirmRow.hidden = false;
+    $('resetNo').focus();
+  });
+  $('resetNo').addEventListener('click', function () {
+    confirmRow.hidden = true;
+    actions.hidden = false;
+    resetBtn.focus();
+  });
+  $('resetYes').addEventListener('click', function () {
+    confirmRow.hidden = true;
+    actions.hidden = false;
+    newRound();
+  });
+  hapticBtn.addEventListener('click', function () {
+    state.haptic = !state.haptic;
+    save();
+    render();
+    buzz(60);
+  });
+  soundBtn.addEventListener('click', function () {
+    state.sound = !state.sound;
+    soundMsg = '';
+    if (state.sound && !tone(660, 0.25, 0.4)) {
+      state.sound = false;
+      soundMsg = 'Este aparelho não conseguiu tocar o som.';
+    }
+    save();
+    render();
+  });
+
+  // Title that the person can change to what they are focusing on
+  var titleEl = $('title'), subEl = $('sub'), titleView = $('titleView');
+  var titleForm = $('titleForm'), titleInput = $('titleInput'), editBtn = $('editTitle');
+  function renderTitle() {
+    titleEl.textContent = state.title || DEFAULT_TITLE;
+    subEl.textContent = state.title ? DEFAULT_TITLE + ', 108 repetições' : '108 repetições';
+  }
+  function closeTitleEdit() {
+    titleForm.hidden = true;
+    titleView.hidden = false;
+    editBtn.focus();
+  }
+  editBtn.addEventListener('click', function () {
+    titleView.hidden = true;
+    titleForm.hidden = false;
+    titleInput.value = state.title;
+    titleInput.focus();
+    titleInput.select();
+  });
+  titleForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var t = titleInput.value.replace(/\s+/g, ' ').trim().slice(0, 40);
+    state.title = (t === DEFAULT_TITLE) ? '' : t;
+    save();
+    renderTitle();
+    closeTitleEdit();
+  });
+  $('titleCancel').addEventListener('click', closeTitleEdit);
+  titleInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeTitleEdit();
+  });
+
+  // Picture of the goal, resized and kept on this device
+  var goalAdd = $('goalAdd'), goalTools = $('goalTools'), countBg = $('countBg');
+  var goalFile = $('goalFile'), goalNote = $('goalNote');
+  function note(el, text) {
+    el.textContent = text || '';
+    el.hidden = !text;
+  }
+  function setGoal(src) {
+    if (src) {
+      countBg.style.backgroundImage = 'url("' + src + '")';
+      countBg.hidden = false;
+      mala.classList.add('has-img');
+      goalTools.hidden = false;
+      goalAdd.hidden = true;
+    } else {
+      countBg.style.backgroundImage = '';
+      countBg.hidden = true;
+      mala.classList.remove('has-img');
+      goalTools.hidden = true;
+      goalAdd.hidden = false;
+    }
+  }
+  function readImage(file, cb) {
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function () {
+      var w = img.naturalWidth, h = img.naturalHeight;
+      var k = Math.min(1, 1000 / Math.max(w, h));
+      var cv = document.createElement('canvas');
+      cv.width = Math.max(1, Math.round(w * k));
+      cv.height = Math.max(1, Math.round(h * k));
+      var ctx = cv.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, cv.width, cv.height);
+      ctx.drawImage(img, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(url);
+      var data = null;
+      try { data = cv.toDataURL('image/jpeg', 0.82); } catch (e) {}
+      cb(data);
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); cb(null); };
+    img.src = url;
+  }
+  try {
+    var g = localStorage.getItem(GOAL_KEY);
+    if (g && g.indexOf('data:image/') === 0) setGoal(g);
+  } catch (e) {}
+  function pickGoal() { goalFile.click(); }
+  goalAdd.addEventListener('click', pickGoal);
+  $('goalChange').addEventListener('click', pickGoal);
+  $('goalRemove').addEventListener('click', function () {
+    try { localStorage.removeItem(GOAL_KEY); } catch (e) {}
+    setGoal(null);
+    note(goalNote, '');
+  });
+  goalFile.addEventListener('change', function () {
+    var f = goalFile.files && goalFile.files[0];
+    goalFile.value = '';
+    if (!f) return;
+    readImage(f, function (data) {
+      if (!data) { note(goalNote, 'Não consegui abrir essa imagem. Tente outra.'); return; }
+      setGoal(data);
+      try {
+        localStorage.setItem(GOAL_KEY, data);
+        note(goalNote, '');
+      } catch (e) {
+        note(goalNote, 'A imagem aparece agora, mas não ficou salva neste aparelho.');
+      }
+    });
+  });
+
+  // Music. Ambient sound is generated here, so it works offline. "Minha música" plays a file from the phone.
+  var playBtn = $('play'), playIcon = $('playIcon'), pauseIcon = $('pauseIcon');
+  var musicTitle = $('musicTitle'), musicSub = $('musicSub'), musicNote = $('musicNote');
+  var srcAmbient = $('srcAmbient'), srcFile = $('srcFile'), volEl = $('vol');
+  var audioFile = $('audioFile'), audioChange = $('audioChange');
+  var playing = false, ambient = null;
+  var fileInfo = null, fileAudio = null, fileUrl = null;
+
+  function idb() {
+    return new Promise(function (res, rej) {
+      try {
+        var req = indexedDB.open('hoponopono108', 1);
+        req.onupgradeneeded = function () { req.result.createObjectStore('files'); };
+        req.onsuccess = function () { res(req.result); };
+        req.onerror = function () { rej(req.error); };
+      } catch (e) { rej(e); }
+    });
+  }
+  function idbGet(k) {
+    return idb().then(function (db) {
+      return new Promise(function (res, rej) {
+        var q = db.transaction('files').objectStore('files').get(k);
+        q.onsuccess = function () { res(q.result); };
+        q.onerror = function () { rej(q.error); };
+      });
+    });
+  }
+  function idbPut(k, val) {
+    return idb().then(function (db) {
+      return new Promise(function (res, rej) {
+        var tx = db.transaction('files', 'readwrite');
+        tx.objectStore('files').put(val, k);
+        tx.oncomplete = function () { res(); };
+        tx.onerror = function () { rej(tx.error); };
+      });
+    });
+  }
+
+  function ambientLevel() { return state.volume / 100 * 0.85; }
+
+  // Soft pad plus bell notes, tuned to be audible on a phone speaker.
+  function buildAmbient(a, dest, level) {
+    var master = a.createGain();
+    master.gain.value = 0.0001;
+    var comp = a.createDynamicsCompressor();
+    comp.threshold.value = -18;
+    comp.knee.value = 24;
+    comp.ratio.value = 4;
+    comp.attack.value = 0.01;
+    comp.release.value = 0.4;
+    master.connect(comp);
+    comp.connect(dest);
+    var filt = a.createBiquadFilter();
+    filt.type = 'lowpass';
+    filt.frequency.value = 2200;
+    filt.Q.value = 0.5;
+    filt.connect(master);
+    var nodes = [];
+    var voices = [[196, 0.34, 0], [196, 0.22, 7], [294, 0.26, 0], [392, 0.24, -5], [494, 0.14, 4], [588, 0.1, 0]];
+    voices.forEach(function (vc, idx) {
+      var o = a.createOscillator();
+      o.type = 'triangle';
+      o.frequency.value = vc[0];
+      o.detune.value = vc[2];
+      var gn = a.createGain();
+      gn.gain.value = vc[1];
+      var lfo = a.createOscillator();
+      lfo.frequency.value = 0.05 + idx * 0.021;
+      var lg = a.createGain();
+      lg.gain.value = vc[1] * 0.5;
+      lfo.connect(lg);
+      lg.connect(gn.gain);
+      o.connect(gn);
+      gn.connect(filt);
+      o.start();
+      lfo.start();
+      nodes.push(o, lfo);
+    });
+    master.gain.setTargetAtTime(level, a.currentTime, 1.0);
+    var scale = [392, 440, 494, 588, 659, 784, 880];
+    var alive = true, timer = null;
+    function chime() {
+      if (!alive) return;
+      var f = scale[Math.floor(Math.random() * scale.length)];
+      playTone(a, master, a.currentTime, f, 5, 0.5);
+      timer = setTimeout(chime, 2500 + Math.random() * 3000);
+    }
+    timer = setTimeout(chime, 900);
+    return {
+      setLevel: function (l) { master.gain.setTargetAtTime(l, a.currentTime, 0.1); },
+      stop: function () {
+        alive = false;
+        clearTimeout(timer);
+        try { master.gain.setTargetAtTime(0.0001, a.currentTime, 0.4); } catch (e) {}
+        setTimeout(function () {
+          nodes.forEach(function (n) { try { n.stop(); } catch (e) {} });
+          try { master.disconnect(); } catch (e) {}
+        }, 1800);
+      }
+    };
+  }
+  function startAmbient() {
+    var a = audio();
+    if (!a) return false;
+    try { ambient = buildAmbient(a, a.destination, ambientLevel()); } catch (e) { ambient = null; return false; }
+    return true;
+  }
+  function stopAmbient() {
+    if (!ambient) return;
+    var m = ambient;
+    ambient = null;
+    try { m.stop(); } catch (e) {}
+  }
+  if (window.__HOPO_TEST__) { window.__HOPO_TEST__.buildAmbient = buildAmbient; window.__HOPO_TEST__.playTone = playTone; }
+
+  function ensureFileAudio() {
+    if (!fileInfo) return null;
+    if (!fileAudio) {
+      fileUrl = URL.createObjectURL(fileInfo.blob);
+      fileAudio = new Audio(fileUrl);
+      fileAudio.loop = true;
+      fileAudio.addEventListener('error', function () {
+        playing = false;
+        renderMusic();
+        note(musicNote, 'Não consegui tocar esse arquivo. Tente outro.');
+      });
+    }
+    fileAudio.volume = state.volume / 100;
+    return fileAudio;
+  }
+  function dropFileAudio() {
+    if (fileAudio) { try { fileAudio.pause(); } catch (e) {} fileAudio = null; }
+    if (fileUrl) { URL.revokeObjectURL(fileUrl); fileUrl = null; }
+  }
+
+  function renderMusic() {
+    var isFile = state.source === 'file';
+    playBtn.setAttribute('aria-pressed', String(playing));
+    playBtn.setAttribute('aria-label', playing ? 'Pausar música' : 'Tocar música');
+    playIcon.toggleAttribute('hidden', playing);
+    pauseIcon.toggleAttribute('hidden', !playing);
+    musicTitle.textContent = isFile ? (fileInfo ? fileInfo.name : 'Minha música') : 'Som ambiente';
+    musicSub.textContent = playing ? 'Tocando' : (isFile ? 'Toque para ouvir' : 'Tons suaves e sinos, sem internet');
+    srcAmbient.setAttribute('aria-checked', String(!isFile));
+    srcFile.setAttribute('aria-checked', String(isFile));
+    audioChange.textContent = fileInfo ? 'Trocar música do celular' : 'Escolher música do celular';
+    volEl.value = state.volume;
+  }
+  function pause() {
+    if (fileAudio) { try { fileAudio.pause(); } catch (e) {} }
+    stopAmbient();
+    playing = false;
+    renderMusic();
+  }
+  function play() {
+    note(musicNote, '');
+    if (state.source === 'file') {
+      var el = ensureFileAudio();
+      if (!el) { audioFile.click(); return; }
+      var p = el.play();
+      if (p && p.catch) p.catch(function () {
+        playing = false;
+        renderMusic();
+        note(musicNote, 'Não consegui tocar esse arquivo. Tente outro.');
+      });
+    } else if (!startAmbient()) {
+      note(musicNote, 'Este aparelho não consegue gerar o som ambiente.');
+      return;
+    }
+    playing = true;
+    renderMusic();
+  }
+  function chooseSource(src) {
+    if (src === 'file' && !fileInfo) { audioFile.click(); return; }
+    if (state.source === src) return;
+    var was = playing;
+    if (was) pause();
+    state.source = src;
+    save();
+    renderMusic();
+    if (was) play();
+  }
+
+  playBtn.addEventListener('click', function () { if (playing) pause(); else play(); });
+  srcAmbient.addEventListener('click', function () { chooseSource('ambient'); });
+  srcFile.addEventListener('click', function () { chooseSource('file'); });
+  audioChange.addEventListener('click', function () { audioFile.click(); });
+  volEl.addEventListener('input', function () {
+    state.volume = parseInt(volEl.value, 10) || 0;
+    save();
+    if (fileAudio) fileAudio.volume = state.volume / 100;
+    if (ambient) { try { ambient.setLevel(ambientLevel()); } catch (e) {} }
+  });
+  audioFile.addEventListener('change', function () {
+    var f = audioFile.files && audioFile.files[0];
+    audioFile.value = '';
+    if (!f) return;
+    var looksAudio = /^audio\//.test(f.type) || /\.(mp3|m4a|aac|ogg|oga|opus|wav|flac|webm)$/i.test(f.name);
+    if (!looksAudio) { note(musicNote, 'Esse arquivo não parece ser uma música.'); return; }
+    if (playing) pause();
+    dropFileAudio();
+    fileInfo = { name: f.name.replace(/\.[^.]+$/, ''), blob: f };
+    state.source = 'file';
+    save();
+    note(musicNote, '');
+    idbPut('music', fileInfo).catch(function () {
+      note(musicNote, 'A música toca agora, mas não ficou salva neste aparelho.');
+    });
+    renderMusic();
+    play();
+  });
+  idbGet('music').then(function (val) {
+    if (val && val.blob) {
+      fileInfo = val;
+    } else if (state.source === 'file') {
+      state.source = 'ambient';
+    }
+    renderMusic();
+  }).catch(function () {
+    if (state.source === 'file') state.source = 'ambient';
+    renderMusic();
+  });
+
+  function renderPace() {
+    var p = paceInfo();
+    paceBtn.textContent = 'Ritmo ' + p[2];
+    paceBtn.setAttribute('aria-label', 'Ritmo da fala, ' + p[2] + '. Toque para mudar.');
+  }
+  paceBtn.addEventListener('click', function () {
+    var idx = 0;
+    for (var i = 0; i < PACES.length; i++) if (PACES[i][0] === state.pace) idx = i;
+    state.pace = PACES[(idx + 1) % PACES.length][0];
+    save();
+    renderPace();
+  });
+
+  renderTitle();
+  render();
+  renderMusic();
+  renderPace();
+})();
+</script>
+</body>
+</html>

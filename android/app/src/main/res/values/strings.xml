@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Ho\'oponopono 108</string>
+    <string name="title_activity_main">Ho\'oponopono 108</string>
+    <string name="package_name">com.mafeleal.hoponopono</string>
+    <string name="custom_url_scheme">com.mafeleal.hoponopono</string>
+</resources>
